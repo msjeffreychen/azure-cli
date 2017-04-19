@@ -13,7 +13,7 @@ node {
     def platforms = ['perf-ubuntu-a0', 'perf-ubuntu-ds1']
     def perftests = [:]
     def perf_closure = {
-      platform -> {
+      platform -> 
         node (platform) {
           checkout scm
           echo "Branch ${env.BRANCH_NAME}"
@@ -25,12 +25,11 @@ node {
           // sh './scripts/jenkins_perf.sh'
           deleteDir()
         }
-      }
     }
 
     for (int i = 0; i < platforms.size(); i++) {
       platform = platforms.get(i)
-      perftests["Test ${platform}"] = perf_closure(platform)
+      perftests["Test ${platform}"] = { perf_closure(platform) }
     }
     perftests.failFast = false
 
