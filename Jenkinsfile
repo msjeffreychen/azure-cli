@@ -18,9 +18,11 @@ node {
         node(platform) {
           checkout scm
           echo "Branch ${env.BRANCH_NAME}"
-          sh 'pip install -U virtualenv'
-          sh 'python -m virtualenv --clear env'
-          sh './scripts/jenkins_perf.sh'
+          echo "${platform}"
+          sh 'ifconfig'
+          // sh 'pip install -U virtualenv'
+          // sh 'python -m virtualenv --clear env'
+          // sh './scripts/jenkins_perf.sh'
           deleteDir()
         }
       }
