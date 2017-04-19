@@ -19,7 +19,8 @@ node {
         node(node_label) {
           checkout scm
           echo "Branch ${env.BRANCH_NAME}"
-          echo "${node_label}"
+          echo "node ${node_label}"
+          echo "plat ${platform}"
           sh 'ifconfig'
           // sh 'pip install -U virtualenv'
           // sh 'python -m virtualenv --clear env'
