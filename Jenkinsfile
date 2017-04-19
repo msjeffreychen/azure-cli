@@ -1,42 +1,31 @@
-pipeline {
-    agent none
-    triggers { pollSCM('H/3 * * * *') }
-    stages {
-        stage ('Build') {
-            agent any
-            steps {
-                sh 'pip install -U virtualenv'
-                sh 'python -m virtualenv --clear env'
-                sh './scripts/jenkins_build.sh'
-                sh './scripts/jenkins_archive.sh'
-            }
-            post {
-                always { deleteDir() }
-            }
-        } 
-        parallel stage ('Performance-Test-A0') {
-            agent { label 'perf-ubuntu-a0' }
-            when { expression { return env.BRANCH_NAME == 'master' || env.BRANCH_NAME.startsWith('performance') } }
-            steps {
-                sh 'pip install -U virtualenv'
-                sh 'python -m virtualenv --clear env'
-                sh './scripts/jenkins_perf.sh'
-            }
-            post {
-                always { deleteDir() }
-            }
-        },
-        stage ('Performance-Test-DS1') {
-            agent { label 'perf-ubuntu-ds1' }
-            when { expression { return env.BRANCH_NAME == 'master' || env.BRANCH_NAME.startsWith('performance') } }
-            steps {
-                sh 'pip install -U virtualenv'
-                sh 'python -m virtualenv --clear env'
-                sh './scripts/jenkins_perf.sh'
-            }
-            post {
-                always { deleteDir() }
-            }
-        }
+node {
+  stage ('Build') {
+    node ('linux-build') {
+      checkout scm
+      sh 'pip install -U virtualenv'
+      sh 'python -m virtualenv --clear env'
+      sh './scripts/jenkins_build.sh'
+      sh './scripts/jenkins_archive.sh'
+      deleteDir()
     }
+  } 
+  stage ('Performance Test') {
+    def platforms = ['perf-ubuntu-a0', 'perf-ubuntu-d1']
+    def perftests = [:]
+    for (int i = 0; i < platforms.size(); ++i) {
+      platform = platforms.get(i)
+      perftests["Test ${platform}"] = {
+        node(platform) {
+          checkout scm
+          echo "Branch ${env.BRANCH_NAME}"
+          sh 'pip install -U virtualenv'
+          sh 'python -m virtualenv --clear env'
+          sh './scripts/jenkins_perf.sh'
+          deleteDir()
+        }
+      }
+      perftests.failFast = false
+      parallel perftests
+    }
+  }
 }
