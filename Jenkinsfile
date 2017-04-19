@@ -12,7 +12,7 @@ node {
   stage ('Performance Test') {
     def platforms = ['perf-ubuntu-a0', 'perf-ubuntu-ds1']
     def perftests = [:]
-    for (int i = 0; i < platforms.size(); ++i) {
+    for (int i = 0; i < platforms.size(); i++) {
       platform = platforms.get(i)
       perftests["Test ${platform}"] = {
         node_label = platforms.get(i)
