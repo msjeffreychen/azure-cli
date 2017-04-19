@@ -14,8 +14,20 @@ pipeline {
                 always { deleteDir() }
             }
         } 
-        stage ('Performance-Test') {
+        parallel stage ('Performance-Test-A0') {
             agent { label 'perf-ubuntu-a0' }
+            when { expression { return env.BRANCH_NAME == 'master' || env.BRANCH_NAME.startsWith('performance') } }
+            steps {
+                sh 'pip install -U virtualenv'
+                sh 'python -m virtualenv --clear env'
+                sh './scripts/jenkins_perf.sh'
+            }
+            post {
+                always { deleteDir() }
+            }
+        },
+        stage ('Performance-Test-DS1') {
+            agent { label 'perf-ubuntu-ds1' }
             when { expression { return env.BRANCH_NAME == 'master' || env.BRANCH_NAME.startsWith('performance') } }
             steps {
                 sh 'pip install -U virtualenv'
