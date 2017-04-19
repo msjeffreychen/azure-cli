@@ -10,7 +10,7 @@ node {
     }
   } 
   stage ('Performance Test') {
-    def platforms = ['perf-ubuntu-a0', 'perf-ubuntu-d1']
+    def platforms = ['perf-ubuntu-a0', 'perf-ubuntu-ds1']
     def perftests = [:]
     for (int i = 0; i < platforms.size(); ++i) {
       platform = platforms.get(i)
@@ -24,8 +24,8 @@ node {
           deleteDir()
         }
       }
-      perftests.failFast = false
-      parallel perftests
     }
+    perftests.failFast = false
+    parallel perftests
   }
 }
