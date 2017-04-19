@@ -13,13 +13,12 @@ node {
     def platforms = ['perf-ubuntu-a0', 'perf-ubuntu-ds1']
     def perftests = [:]
     for (int i = 0; i < platforms.size(); ++i) {
-      platform = platforms.get(i)
-      node_label = "${platform}"
+      platform = platforms.get(i).clone()
       perftests["Test ${platform}"] = {
-        node(node_label) {
+        node(platform) {
           checkout scm
           echo "Branch ${env.BRANCH_NAME}"
-          echo "${node_label}"
+          echo "${platform}"
           sh 'ifconfig'
           // sh 'pip install -U virtualenv'
           // sh 'python -m virtualenv --clear env'
