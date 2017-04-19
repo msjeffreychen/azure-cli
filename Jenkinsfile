@@ -4,8 +4,8 @@ node {
       checkout scm
       sh 'pip install -U virtualenv'
       sh 'python -m virtualenv --clear env'
-      sh './scripts/jenkins_build.sh'
-      sh './scripts/jenkins_archive.sh'
+      // sh './scripts/jenkins_build.sh'
+      // sh './scripts/jenkins_archive.sh'
       deleteDir()
     }
   } 
@@ -14,8 +14,8 @@ node {
     def perftests = [:]
     for (int i = 0; i < platforms.size(); ++i) {
       platform = platforms.get(i)
-      node_label = platform + ''
       perftests["Test ${platform}"] = {
+        node_label = platforms.get(i)
         node(node_label) {
           checkout scm
           echo "Branch ${env.BRANCH_NAME}"
