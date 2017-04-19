@@ -14,12 +14,12 @@ node {
     def perftests = [:]
     for (int i = 0; i < platforms.size(); ++i) {
       platform = platforms.get(i)
+      node_label = "${platform}"
       perftests["Test ${platform}"] = {
-        node_label = platform
         node(node_label) {
           checkout scm
           echo "Branch ${env.BRANCH_NAME}"
-          echo "${platform}"
+          echo "${node_label}"
           sh 'ifconfig'
           // sh 'pip install -U virtualenv'
           // sh 'python -m virtualenv --clear env'
