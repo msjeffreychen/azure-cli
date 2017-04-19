@@ -13,9 +13,10 @@ node {
     def platforms = ['perf-ubuntu-a0', 'perf-ubuntu-ds1']
     def perftests = [:]
     for (int i = 0; i < platforms.size(); ++i) {
-      platform = platforms.get(i).clone()
+      platform = platforms.get(i)
       perftests["Test ${platform}"] = {
-        node(platform) {
+        node_label = new String(platform)
+        node(node_label) {
           checkout scm
           echo "Branch ${env.BRANCH_NAME}"
           echo "${platform}"
