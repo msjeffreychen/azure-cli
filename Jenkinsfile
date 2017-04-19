@@ -15,7 +15,8 @@ node {
     for (int i = 0; i < platforms.size(); ++i) {
       platform = platforms.get(i)
       perftests["Test ${platform}"] = {
-        node(platform) {
+        node_label = platform
+        node(node_label) {
           checkout scm
           echo "Branch ${env.BRANCH_NAME}"
           echo "${platform}"
