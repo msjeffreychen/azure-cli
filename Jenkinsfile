@@ -12,8 +12,8 @@ node {
   stage ('Performance Test') {
     def platforms = ['perf-ubuntu-a0', 'perf-ubuntu-ds1']
     def perftests = [:]
-    def perf_closure = {
-      platform -> 
+    def perf_closure(platform) {
+      return
         node (platform) {
           checkout scm
           echo "Branch ${env.BRANCH_NAME}"
@@ -29,7 +29,7 @@ node {
 
     for (int i = 0; i < platforms.size(); i++) {
       platform = platforms.get(i)
-      perftests["Test ${platform}"] = { perf_closure(platform) }
+      perftests["Test ${platform}"] = perf_closure(platform)
     }
     perftests.failFast = false
 
